@@ -30,4 +30,5 @@ return [
     'settings_educations'           => 'Educations',
     'settings_languages'            => 'Languages',
     'settings_projects'             => 'Projects',
+    'settings_attachments'          => 'Attachments',
 ];

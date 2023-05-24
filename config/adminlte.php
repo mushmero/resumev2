@@ -352,6 +352,11 @@ return [
             'icon' => 'fas fa-sliders-h',
             'submenu' => [
                 [
+                    'text' => 'settings_attachments',
+                    'icon' => 'fas fa-wrench',
+                    'url' => 'attachments',
+                ],
+                [
                     'text' => 'settings_socials',
                     'icon' => 'fas fa-wrench',
                     'url' => '#',

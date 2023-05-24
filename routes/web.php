@@ -24,5 +24,10 @@ Route::get('/auth/check',function(){
 Route::middleware(['auth'])->group(static function () {
     Route::middleware('permission')->group(static function () {
         // route with permission middleware
+        Route::namespace('App\Http\Controllers')->group(static function () {
+            Route::namespace('Settings')->group(static function (){
+                Route::get('/attachments','AttachmentsController@index')->name('attachments');
+            });
+        });
     });
 });
