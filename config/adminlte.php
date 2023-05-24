@@ -306,6 +306,73 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
+        ['header' => 'user_information'],
+        [
+            'text' => 'profiles',
+            'icon' => 'fas fa-user',
+            'url' => '#',
+        ],
+        [
+            'text' => 'socials',
+            'icon' => 'fas fa-user-friends',
+            'url' => '#',
+        ],
+        [
+            'text' => 'educations',
+            'icon' => 'fas fa-university',
+            'url' => '#',
+        ],
+        [
+            'text' => 'languages',
+            'icon' => 'fas fa-language',
+            'url' => '#',
+        ],
+        [
+            'text' => 'interests',
+            'icon' => 'fas fa-thumbs-up',
+            'url' => '#',
+        ],
+        [
+            'text' => 'experiences',
+            'icon' => 'fas fa-briefcase',
+            'url' => '#',
+        ],
+        [
+            'text' => 'projects',
+            'icon' => 'fas fa-archive',
+            'url' => '#',
+        ],
+        [
+            'text' => 'skills',
+            'icon' => 'fas fa-rocket',
+            'url' => '#',
+        ],
+        [
+            'text' => 'app_settings',
+            'icon' => 'fas fa-sliders-h',
+            'submenu' => [
+                [
+                    'text' => 'settings_socials',
+                    'icon' => 'fas fa-wrench',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'settings_educations',
+                    'icon' => 'fas fa-wrench',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'settings_languages',
+                    'icon' => 'fas fa-wrench',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'settings_projects',
+                    'icon' => 'fas fa-wrench',
+                    'url' => '#',
+                ],
+            ],
+        ],
         ['header'   =>  'admin_setting'],
         [
             'text'  =>  'settings',
