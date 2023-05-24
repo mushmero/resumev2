@@ -13,12 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'App\Http\Controllers\Welcome\WelcomeController@index')->name('welcome');
 
 Auth::routes();
 
 Route::get('/auth/check',function(){
     return (Auth::check()) ? True : False;
+});
+
+Route::middleware(['auth'])->group(static function () {
+    Route::middleware('permission')->group(static function () {
+        // route with permission middleware
+    });
 });
