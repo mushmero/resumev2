@@ -46,6 +46,6 @@ class Attachments extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class,'id','user_id')->withTrashed();
+        return $this->hasOne('Mushmero\Lapdash\Models\User','id','user_id')->withTrashed();
     }
 }
