@@ -26,7 +26,7 @@ return [
     'projects'                      => 'Projects',
     'skills'                        => 'Skills',
     'app_settings'                  => 'App Settings',
-    'settings_socials'              => 'Socials',
+    'settings_icons'                => 'Icons',
     'settings_educations'           => 'Educations',
     'settings_languages'            => 'Languages',
     'settings_projects'             => 'Projects',

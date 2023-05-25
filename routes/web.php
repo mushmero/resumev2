@@ -27,6 +27,16 @@ Route::middleware(['auth'])->group(static function () {
         Route::namespace('App\Http\Controllers')->group(static function () {
             Route::namespace('Settings')->group(static function (){
                 Route::get('/attachments','AttachmentsController@index')->name('attachments');
+                Route::prefix('icons')->group(static function() {
+                    Route::get('/', 'IconsController@index')->name('icons');
+                    Route::post('/', 'IconsController@store')->name('icons.store');
+                    Route::get('/create', 'IconsController@create')->name('icons.create');
+                    Route::post('/import', 'IconsController@import')->name('icons.import');
+                    Route::get('/{id}/edit', 'IconsController@edit')->name('icons.edit');
+                    Route::put('/{id}', 'IconsController@update')->name('icons.update');
+                    Route::get('/{id}/show', 'IconsController@show')->name('icons.show');
+                    Route::get('/{id}/delete', 'IconsController@destroy')->name('icons.delete');
+                });
             });
         });
     });

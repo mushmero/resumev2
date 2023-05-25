@@ -357,9 +357,9 @@ return [
                     'url' => 'attachments',
                 ],
                 [
-                    'text' => 'settings_socials',
+                    'text' => 'settings_icons',
                     'icon' => 'fas fa-wrench',
-                    'url' => '#',
+                    'url' => 'icons',
                 ],
                 [
                     'text' => 'settings_educations',
