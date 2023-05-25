@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Helpers;
+use App\Models\Attachments;
 use App\Models\Visitors;
 use Carbon\Carbon;
+use File;
+use Illuminate\Http\Request;
+use Str;
 
 class Helper {
     public static function getActiveProfile()
@@ -95,4 +99,92 @@ class Helper {
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
     }
+
+	public static function createDirectory($dir)
+	{
+		if(!File::exists($dir)){
+			mkdir($dir, 0755,true);
+		}
+		return;
+	}
+    public static function storeFile(Request $request, $fieldname, $dirname = 'uploads', $tag = 'default')
+    {
+        if(empty($request->file($fieldname))){
+            return false;
+        }else{
+            $file = $request->file($fieldname);
+            $fileExtension = $file->extension();
+            $rawFileName = Carbon::Now()->timestamp.'_'.Str::random(10);
+            $filename = $rawFileName.'.'.$fileExtension;
+
+            // check folder exist & create if not
+            Helper::createDirectory('storage/'.$dirname);
+            // move the file
+            $file->move('storage/'.$dirname, $filename);
+			$sizeInByte = File::size(public_path('storage/'.$dirname.'/'.$filename));
+
+            // create records in database
+            $attachment = Attachments::create([
+                'altname' => $rawFileName,
+                'filename' => $filename,
+                'path' => 'storage/'.$dirname,
+                'type' => $fileExtension,
+                'tag' => $tag,
+				'filesize' => Helper::convert_filesize($sizeInByte),
+                'user_id' => auth()->user()->id,
+            ]);
+
+            return $attachment;
+        }
+    }
+	public static function json_validate($string)
+	{
+		// decode the JSON data
+		$result = json_decode($string);
+
+		// switch and check possible JSON errors
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				$error = ''; // JSON is valid // No error has occurred
+				break;
+			case JSON_ERROR_DEPTH:
+				$error = 'The maximum stack depth has been exceeded.';
+				break;
+			case JSON_ERROR_STATE_MISMATCH:
+				$error = 'Invalid or malformed JSON.';
+				break;
+			case JSON_ERROR_CTRL_CHAR:
+				$error = 'Control character error, possibly incorrectly encoded.';
+				break;
+			case JSON_ERROR_SYNTAX:
+				$error = 'Syntax error, malformed JSON.';
+				break;
+			// PHP >= 5.3.3
+			case JSON_ERROR_UTF8:
+				$error = 'Malformed UTF-8 characters, possibly incorrectly encoded.';
+				break;
+			// PHP >= 5.5.0
+			case JSON_ERROR_RECURSION:
+				$error = 'One or more recursive references in the value to be encoded.';
+				break;
+			// PHP >= 5.5.0
+			case JSON_ERROR_INF_OR_NAN:
+				$error = 'One or more NAN or INF values in the value to be encoded.';
+				break;
+			case JSON_ERROR_UNSUPPORTED_TYPE:
+				$error = 'A value of a type that cannot be encoded was given.';
+				break;
+			default:
+				$error = 'Unknown JSON error occured.';
+				break;
+		}
+
+		if ($error !== '') {
+			// throw the Exception or exit // or whatever :)
+			return $error;
+		}
+
+		// everything is OK
+		return $result;
+	}
 }
