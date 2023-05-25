@@ -35,22 +35,24 @@ class AttachmentsController extends Controller
             'Filename',
             'Type',
             'Filesize',
-            'Created At'
+            'Created At',
+            'Created By',
         ];
 
         foreach($attachments as $single){
             $data[] = array(
                 $single->filename,
                 $single->type,
-                Helper::convert_filesize($single->filesize),
+                $single->filesize,
                 Carbon::parse($single->created_at)->format('d F Y'),
+                $single->user->email,
             );
         }
 
         $config = [
             'data' => $data,
             'order' => [[0, 'asc']],
-            'columns' => [null, null, null, null],
+            'columns' => [null, null, null, null, null],
         ];
 
         return view('settings.attachments.list', [
