@@ -1,0 +1,12 @@
+{    
+    "500px": {
+      "type": "fab",
+      "name": "500px",
+      "unicode": "\\f26e"
+    },
+    "accessible-icon": {
+      "type": "fab",
+      "name": "accessible-icon",
+      "unicode": "\\f368"
+    }
+}

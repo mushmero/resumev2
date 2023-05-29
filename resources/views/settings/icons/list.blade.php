@@ -26,7 +26,8 @@
 function importModal(){
     (async () => {
         const { value: file } = await Swal.fire({
-            title: 'Select file',
+            title: 'Import {{ $title }}',
+            html: 'Support json file only <br>Please follow this <a href="{!! url("templates/icons/icons_template.json") !!}" target="_blank">template</a> for reference',
             input: 'file',
             inputAttributes: {
                 'accept': 'json/*',
