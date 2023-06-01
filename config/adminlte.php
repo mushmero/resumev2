@@ -374,7 +374,7 @@ return [
                 [
                     'text' => 'settings_projects',
                     'icon' => 'fas fa-wrench',
-                    'url' => '#',
+                    'url' => 'statuslist',
                 ],
             ],
         ],

@@ -55,6 +55,15 @@ Route::middleware(['auth'])->group(static function () {
                     Route::get('/{id}/show', 'ProficiencyLevelController@show')->name('proficiencylevel.show');
                     Route::get('/{id}/delete', 'ProficiencyLevelController@destroy')->name('proficiencylevel.delete');
                 });
+                Route::prefix('statuslist')->group(static function() {
+                    Route::get('/', 'StatusController@index')->name('statuslist');
+                    Route::post('/', 'StatusController@store')->name('statuslist.store');
+                    Route::get('/create', 'StatusController@create')->name('statuslist.create');
+                    Route::get('/{id}/edit', 'StatusController@edit')->name('statuslist.edit');
+                    Route::put('/{id}', 'StatusController@update')->name('statuslist.update');
+                    Route::get('/{id}/show', 'StatusController@show')->name('statuslist.show');
+                    Route::get('/{id}/delete', 'StatusController@destroy')->name('statuslist.delete');
+                });
             });
         });
     });
