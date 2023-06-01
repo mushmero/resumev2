@@ -46,6 +46,15 @@ Route::middleware(['auth'])->group(static function () {
                     Route::get('/{id}/show', 'EducationLevelController@show')->name('educationlevel.show');
                     Route::get('/{id}/delete', 'EducationLevelController@destroy')->name('educationlevel.delete');
                 });
+                Route::prefix('proficiencylevel')->group(static function() {
+                    Route::get('/', 'ProficiencyLevelController@index')->name('proficiencylevel');
+                    Route::post('/', 'ProficiencyLevelController@store')->name('proficiencylevel.store');
+                    Route::get('/create', 'ProficiencyLevelController@create')->name('proficiencylevel.create');
+                    Route::get('/{id}/edit', 'ProficiencyLevelController@edit')->name('proficiencylevel.edit');
+                    Route::put('/{id}', 'ProficiencyLevelController@update')->name('proficiencylevel.update');
+                    Route::get('/{id}/show', 'ProficiencyLevelController@show')->name('proficiencylevel.show');
+                    Route::get('/{id}/delete', 'ProficiencyLevelController@destroy')->name('proficiencylevel.delete');
+                });
             });
         });
     });

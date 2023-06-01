@@ -369,7 +369,7 @@ return [
                 [
                     'text' => 'settings_languages',
                     'icon' => 'fas fa-wrench',
-                    'url' => '#',
+                    'url' => 'proficiencylevel',
                 ],
                 [
                     'text' => 'settings_projects',
