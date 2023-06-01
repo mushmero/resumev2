@@ -364,7 +364,7 @@ return [
                 [
                     'text' => 'settings_educations',
                     'icon' => 'fas fa-wrench',
-                    'url' => '#',
+                    'url' => 'educationlevel',
                 ],
                 [
                     'text' => 'settings_languages',

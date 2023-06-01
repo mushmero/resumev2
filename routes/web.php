@@ -37,6 +37,15 @@ Route::middleware(['auth'])->group(static function () {
                     Route::get('/{id}/show', 'IconsController@show')->name('icons.show');
                     Route::get('/{id}/delete', 'IconsController@destroy')->name('icons.delete');
                 });
+                Route::prefix('educationlevel')->group(static function() {
+                    Route::get('/', 'EducationLevelController@index')->name('educationlevel');
+                    Route::post('/', 'EducationLevelController@store')->name('educationlevel.store');
+                    Route::get('/create', 'EducationLevelController@create')->name('educationlevel.create');
+                    Route::get('/{id}/edit', 'EducationLevelController@edit')->name('educationlevel.edit');
+                    Route::put('/{id}', 'EducationLevelController@update')->name('educationlevel.update');
+                    Route::get('/{id}/show', 'EducationLevelController@show')->name('educationlevel.show');
+                    Route::get('/{id}/delete', 'EducationLevelController@destroy')->name('educationlevel.delete');
+                });
             });
         });
     });
