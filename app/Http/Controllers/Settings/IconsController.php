@@ -89,6 +89,7 @@ class IconsController extends Controller
             'fullname' => $data['fullname'],
             'name' => $data['name'],
             'type' => $data['type'],
+            'user_id' => auth()->user()->id,
         ]);
 
         if($store){
@@ -146,6 +147,7 @@ class IconsController extends Controller
         $data['fullname'] = $request->input('fullname');
         $data['name'] = $request->input('name');
         $data['type'] = $request->input('type');
+        $data['user_id'] = auth()->user()->id;
 
         $update = Icons::find($id)->update($data);
 
