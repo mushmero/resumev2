@@ -345,7 +345,7 @@ return [
         [
             'text' => 'skills',
             'icon' => 'fas fa-rocket',
-            'url' => '#',
+            'url' => 'skills',
         ],
         [
             'text' => 'app_settings',
