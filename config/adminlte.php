@@ -310,7 +310,7 @@ return [
         [
             'text' => 'profiles',
             'icon' => 'fas fa-user',
-            'url' => '#',
+            'url' => 'profiles',
         ],
         [
             'text' => 'socials',

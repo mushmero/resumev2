@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use App\Models\Attachments;
+use App\Models\Profiles;
 use App\Models\Visitors;
 use Carbon\Carbon;
 use File;
@@ -11,7 +12,7 @@ use Str;
 class Helper {
     public static function getActiveProfile()
     {
-        $profile = '';
+        $profile = Profiles::withTrashed()->where(['status' => 1])->get();
         return $profile;
     }
 	

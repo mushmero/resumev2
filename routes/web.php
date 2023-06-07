@@ -66,6 +66,16 @@ Route::middleware(['auth'])->group(static function () {
                 });
             });
             Route::namespace('Module')->group(static function(){
+                Route::prefix('profiles')->group(static function(){
+                    Route::get('/', 'ProfilesController@index')->name('profiles');
+                    Route::post('/', 'ProfilesController@store')->name('profiles.store');
+                    Route::get('/create', 'ProfilesController@create')->name('profiles.create');
+                    Route::get('/{id}/edit', 'ProfilesController@edit')->name('profiles.edit');
+                    Route::put('/{id}', 'ProfilesController@update')->name('profiles.update');
+                    Route::get('/{id}/show', 'ProfilesController@show')->name('profiles.show');
+                    Route::get('/{id}/delete', 'ProfilesController@destroy')->name('profiles.delete');
+                    Route::get('/{id}/restore', 'ProfilesController@restore')->name('profiles.restore');
+                });
                 Route::prefix('skills')->group(static function(){
                     Route::get('/', 'SkillsController@index')->name('skills');
                     Route::post('/', 'SkillsController@store')->name('skills.store');
@@ -75,6 +85,15 @@ Route::middleware(['auth'])->group(static function () {
                     Route::get('/{id}/show', 'SkillsController@show')->name('skills.show');
                     Route::get('/{id}/delete', 'SkillsController@destroy')->name('skills.delete');
                 });
+            });
+        });
+    });
+    Route::namespace('App\Http\Controllers')->group(static function() {
+        Route::namespace('Module')->group(static function () {
+            Route::prefix('/profiles')->group(static function() {
+                Route::get('/countstatus', 'ProfilesController@countstatus');
+                Route::get('/checkStatusById/{id}', 'ProfilesController@checkStatusById');
+                Route::post('/updateStatusById/{id}', 'ProfilesController@updateStatusById');
             });
         });
     });
