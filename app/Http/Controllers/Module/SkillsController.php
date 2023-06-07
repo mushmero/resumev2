@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class SkillsController extends Controller
 {
-    protected $btnEdit, $btnDelete, $btnDetails, $title;
+    protected $btnEdit, $btnDelete, $btnDetails, $title, $error_msg;
 
     /**
      * Declare default template for button edit, button delete & button view
@@ -22,6 +22,9 @@ class SkillsController extends Controller
         $this->btnDelete = config('lapdash.btn-delete');
         $this->btnDetails = config('lapdash.btn-view');
         $this->title = 'Skills';
+        $this->error_msg = [
+            'inactive_profile' => 'No active profile. Please activate first',
+        ];
     }
     /**
      * Display a listing of the resource.
@@ -61,7 +64,9 @@ class SkillsController extends Controller
                 'table_title' => $this->title.' List',
             ]);
         }else{
-            return view('no-access');
+            return view('no-access',[
+                'error_msg' => $this->error_msg['inactive_profile'],
+            ]);
         }
     }
 
@@ -78,7 +83,9 @@ class SkillsController extends Controller
                 'table_title' => 'Create '.$this->title,
             ]);
         }else{
-            return view('no-access');
+            return view('no-access',[
+                'error_msg' => $this->error_msg['inactive_profile'],
+            ]);
         }
     }
 
@@ -132,7 +139,9 @@ class SkillsController extends Controller
                 'table_title' => 'Detail '.$this->title,
             ]);
         }else{
-            return view('no-access');
+            return view('no-access',[
+                'error_msg' => $this->error_msg['inactive_profile'],
+            ]);
         }
     }
 
