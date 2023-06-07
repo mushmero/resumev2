@@ -2,7 +2,6 @@ $(document).ready(function() {
 
     $.ajax({
         url: "/auth/check",
-        async: false,
         datatype: 'json',
         success: function(data){
             if(data == 1){
