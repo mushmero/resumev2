@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('lapdash::page')
 
 @section(config('adminlte.title'), 'AdminLTE')
 
