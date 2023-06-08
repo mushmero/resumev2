@@ -330,7 +330,7 @@ return [
         [
             'text' => 'interests',
             'icon' => 'fas fa-thumbs-up',
-            'url' => '#',
+            'url' => 'interests',
         ],
         [
             'text' => 'experiences',
