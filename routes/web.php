@@ -76,6 +76,15 @@ Route::middleware(['auth'])->group(static function () {
                     Route::get('/{id}/delete', 'ProfilesController@destroy')->name('profiles.delete');
                     Route::get('/{id}/restore', 'ProfilesController@restore')->name('profiles.restore');
                 });
+                Route::prefix('socials')->group(static function(){
+                    Route::get('/', 'SocialsController@index')->name('socials');
+                    Route::post('/', 'SocialsController@store')->name('socials.store');
+                    Route::get('/create', 'SocialsController@create')->name('socials.create');
+                    Route::get('/{id}/edit', 'SocialsController@edit')->name('socials.edit');
+                    Route::put('/{id}', 'SocialsController@update')->name('socials.update');
+                    Route::get('/{id}/show', 'SocialsController@show')->name('socials.show');
+                    Route::get('/{id}/delete', 'SocialsController@destroy')->name('socials.delete');
+                });
                 Route::prefix('skills')->group(static function(){
                     Route::get('/', 'SkillsController@index')->name('skills');
                     Route::post('/', 'SkillsController@store')->name('skills.store');
