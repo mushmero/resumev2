@@ -320,7 +320,7 @@ return [
         [
             'text' => 'educations',
             'icon' => 'fas fa-university',
-            'url' => '#',
+            'url' => 'educations',
         ],
         [
             'text' => 'languages',
