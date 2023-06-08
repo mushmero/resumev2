@@ -325,7 +325,7 @@ return [
         [
             'text' => 'languages',
             'icon' => 'fas fa-language',
-            'url' => '#',
+            'url' => 'languages',
         ],
         [
             'text' => 'interests',
