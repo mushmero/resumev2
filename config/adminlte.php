@@ -340,7 +340,7 @@ return [
         [
             'text' => 'projects',
             'icon' => 'fas fa-archive',
-            'url' => '#',
+            'url' => 'projects',
         ],
         [
             'text' => 'skills',
