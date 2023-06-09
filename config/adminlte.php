@@ -335,7 +335,7 @@ return [
         [
             'text' => 'experiences',
             'icon' => 'fas fa-briefcase',
-            'url' => '#',
+            'url' => 'experiences',
         ],
         [
             'text' => 'projects',
@@ -631,6 +631,21 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css',
+                ],
+            ],
+        ],
+        'Summernote' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/summernote/summernote-bs4.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/summernote/summernote-bs4.min.css',
                 ],
             ],
         ],

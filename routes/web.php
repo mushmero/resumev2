@@ -112,6 +112,15 @@ Route::middleware(['auth'])->group(static function () {
                     Route::get('/{id}/show', 'InterestsController@show')->name('interests.show');
                     Route::get('/{id}/delete', 'InterestsController@destroy')->name('interests.delete');
                 });
+                Route::prefix('experiences')->group(static function(){
+                    Route::get('/', 'ExperiencesController@index')->name('experiences');
+                    Route::post('/', 'ExperiencesController@store')->name('experiences.store');
+                    Route::get('/create', 'ExperiencesController@create')->name('experiences.create');
+                    Route::get('/{id}/edit', 'ExperiencesController@edit')->name('experiences.edit');
+                    Route::put('/{id}', 'ExperiencesController@update')->name('experiences.update');
+                    Route::get('/{id}/show', 'ExperiencesController@show')->name('experiences.show');
+                    Route::get('/{id}/delete', 'ExperiencesController@destroy')->name('experiences.delete');
+                });
                 Route::prefix('skills')->group(static function(){
                     Route::get('/', 'SkillsController@index')->name('skills');
                     Route::post('/', 'SkillsController@store')->name('skills.store');
