@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(static function () {
     Route::middleware('permission')->group(static function () {
         // route with permission middleware
         Route::namespace('App\Http\Controllers')->group(static function () {
+            Route::get('/home', 'HomeController@index')->name('home');
             Route::namespace('Settings')->group(static function (){
                 Route::get('/attachments','AttachmentsController@index')->name('attachments');
                 Route::prefix('icons')->group(static function() {
@@ -143,6 +144,8 @@ Route::middleware(['auth'])->group(static function () {
         });
     });
     Route::namespace('App\Http\Controllers')->group(static function() {
+        Route::get('/getAllCountries', 'HomeController@getCountryList');
+        Route::get('/getVisitorByCountry', 'HomeController@getVisitorByCountry');
         Route::namespace('Module')->group(static function () {
             Route::prefix('/profiles')->group(static function() {
                 Route::get('/countstatus', 'ProfilesController@countstatus');
