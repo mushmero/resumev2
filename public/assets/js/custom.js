@@ -8,7 +8,10 @@ $(document).ready(function() {
                 disabledLink();
                 hideMenu();
                 experiences();
-                loadmap();
+                if(window.location.pathname == '/home'){
+                    // load visitor map only on home
+                    loadmap();
+                }
             }
         }
     });
