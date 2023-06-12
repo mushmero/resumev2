@@ -52,7 +52,7 @@
                     I speak and listen to <br>
                     @if (!empty($data['languages']))
                         @foreach ($data['languages'] as $language)
-                            {{ $language->name.' ('.$language->allproficiency->proficiency.')' }} <br>
+                            {{ $language->name.' ('.$language->proficiency->proficiency.')' }} <br>
                         @endforeach                        
                     @else
                         None
@@ -104,7 +104,7 @@
             @if (!empty($data['skills']))
                 @foreach ($data['skills'] as $skill)
                     <skill-block>
-                        <i class="{{ $skill->allicons->fullname }} fa-8x"></i> <span>{{ $skill->name }}</span>
+                        <i class="{{ $skill->icons->fullname }} fa-8x"></i> <span>{{ $skill->name }}</span>
                     </skill-block>                
                 @endforeach                
             @else

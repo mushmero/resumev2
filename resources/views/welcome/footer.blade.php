@@ -7,7 +7,7 @@
     <h4>
     @if (!empty($data['socials']))
         @foreach ($data['socials'] as $social)
-            <a href ="{{ $social->link }}" target="_blank" title="{{ $social->name }}"><i class="{{ $social->allicons->fullname }} fa-2x"></i></a>
+            <a href ="{{ $social->link }}" target="_blank" title="{{ $social->name }}"><i class="{{ $social->icons->fullname }} fa-2x"></i></a>
         @endforeach        
     @else
         None
