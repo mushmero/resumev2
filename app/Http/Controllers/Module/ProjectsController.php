@@ -58,7 +58,7 @@ class ProjectsController extends Controller
             'columns' => [null, null, null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.projects.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -100,7 +100,7 @@ class ProjectsController extends Controller
         ];
 
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.projects.create', [
                 'configTE' => $configTE,
                 'status' => $status,
@@ -131,7 +131,7 @@ class ProjectsController extends Controller
             'status_id' => $data['status'],
             'user_id' => auth()->user()->id,
             'description' => $data['description'],
-            'personal_id' => Helper::getActiveProfile()->id,
+            'profile_id' => Helper::getActiveProfile()->id,
         ]);
 
         if($store){
@@ -172,7 +172,7 @@ class ProjectsController extends Controller
             ],
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.projects.show', [
                 'data' => $data,
                 'user' => $user,
@@ -216,7 +216,7 @@ class ProjectsController extends Controller
             "allowClear" => true,
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.projects.edit', [
                 'data' => $data,
                 'configTE' => $configTE,
@@ -245,7 +245,7 @@ class ProjectsController extends Controller
         $data['status_id'] = $request->input('status');
         $data['description'] = $request->input('description');
         $data['user_id'] = auth()->user()->id;
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Projects::find($id)->update($data);
 

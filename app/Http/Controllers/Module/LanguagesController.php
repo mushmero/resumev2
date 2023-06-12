@@ -56,7 +56,7 @@ class LanguagesController extends Controller
             'columns' => [null, null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.languages.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -81,7 +81,7 @@ class LanguagesController extends Controller
             "allowClear" => true,
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.languages.create', [
                 'proficiency' => $proficiency,
                 'configProficiency' => $configProficiency,
@@ -110,7 +110,7 @@ class LanguagesController extends Controller
             'name' => $data['name'],
             'proficiency_id' => $data['proficiency'],
             'user_id' => auth()->user()->id,
-            'personal_id' => Helper::getActiveProfile()->id,
+            'profile_id' => Helper::getActiveProfile()->id,
         ]);
 
         if($store){
@@ -135,7 +135,7 @@ class LanguagesController extends Controller
 
         $user = $data->user;
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.languages.show', [
                 'data' => $data,
                 'user' => $user,
@@ -162,7 +162,7 @@ class LanguagesController extends Controller
             "allowClear" => true,
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.languages.edit', [
                 'data' => $data,
                 'proficiency' => $proficiency,
@@ -189,7 +189,7 @@ class LanguagesController extends Controller
         $data['name'] = $request->input('name');
         $data['proficiency_id'] = $request->input('proficiency');
         $data['user_id'] = auth()->user()->id;
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Languages::find($id)->update($data);
 

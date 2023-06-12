@@ -43,7 +43,7 @@ class SkillsController extends Controller
 
         foreach($array as $arr){
             $data[] = array(
-                $arr->name,
+                $arr->name.'&nbsp;&nbsp;&nbsp; <i class="fa-fw '.$arr->icons->fullname.'"></i>',
                 '<div class="progress"><div role="progressbar" class="progress-bar progress-bar-striped progress-bar-animated" aria-valuenow="'.$arr->percentage.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$arr->percentage.'%; background-color: rgb(52, 125, 241);">'.$arr->percentage.'</div></div>',
                 $arr->user->name,
                 '<nobr><a href="'.url('skills/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('skills/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('skills/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
@@ -56,7 +56,7 @@ class SkillsController extends Controller
             'columns' => [null, null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.skills.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -76,7 +76,7 @@ class SkillsController extends Controller
     public function create()
     {   
         $icons = Icons::all();  
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.skills.create', [
                 'icons' => $icons,    
                 'title' => $this->title,
@@ -131,7 +131,7 @@ class SkillsController extends Controller
 
         $user = $data->user;
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.skills.show', [
                 'data' => $data,
                 'user' => $user,
@@ -154,7 +154,7 @@ class SkillsController extends Controller
 
         $icons = Icons::all();
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.skills.show', [
                 'data' => $data,
                 'icons' => $icons,
@@ -180,7 +180,7 @@ class SkillsController extends Controller
         $data['percentage'] = $request->input('percentage');
         $data['user_id'] = auth()->user()->id;
         $data['icon_id'] = $request->input('icon');
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Skills::find($id)->update($data);
 

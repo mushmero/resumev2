@@ -50,7 +50,7 @@
                         <x-adminlte-profile-row-item title="{{ $profile['phone'] }}&nbsp;|&nbsp;{{ $profile['email'] }} " class="text-center"/>
                         <x-adminlte-profile-row-item title="{{ $experience['length'] }} year(s) of experience(s) with" class="text-center border-bottom border-secondary"/>
                         @for ($i = 0; $i < $skill['count']; $i++)
-                            <x-adminlte-profile-col-item title="{{ $skill['name'][$i] }}" icon="fas fa-fw fa-code text-blue" size=3/>                    
+                            <x-adminlte-profile-col-item title="{{ $skill['name'][$i] }}" icon="fa-fw {{ $skill['icon'][$i] }} text-blue" size=3/>                    
                         @endfor
                     </x-adminlte-profile-widget>
                 </div>

@@ -42,7 +42,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('home', [
                 'inspiration' => $this->getQuotes(),
                 'profile' => $this->getProfile(),
@@ -87,7 +87,7 @@ class HomeController extends Controller
         foreach($experiences as $experience){
             $data['position'][] = $experience->position;
             $data['employer'][] = $experience->employer;
-            $data['length'] = Carbon::now()->format('Y') - ($experiences->min('start') ? Carbon::parse($experiences->min('start'))->format('Y') : Carbon::now()->format('Y'));
+            $data['length'] = Carbon::now()->format('Y') - ($experiences->min('start') ? Carbon::createFromFormat('m/Y',$experiences->min('start'))->format('Y') : Carbon::now()->format('Y'));
         }
         $data['count'] = isset($experiences) ? $experiences->count() : 0;
         return $data;
@@ -99,6 +99,7 @@ class HomeController extends Controller
         $data = array();
         foreach($skills as $skill){
             $data['name'][] = $skill->name;
+            $data['icon'][] = $skill->icons->fullname;
             $data['percentage'][] = $skill->percentage;
         }
         $data['count'] = isset($skills) ? $skills->count() : 0;

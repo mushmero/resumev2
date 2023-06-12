@@ -46,7 +46,7 @@ class SocialsController extends Controller
             $data[] = array(
                 $arr->name,
                 $arr->link,
-                $arr->icon_id ? '<i class="fa-fw '.$arr->allicons->fullname.'"></i>&nbsp;'.$arr->allicons->name : '',
+                $arr->icon_id ? '<i class="fa-fw '.$arr->icons->fullname.'"></i>&nbsp;'.$arr->icons->name : '',
                 $arr->user->name,
                 '<nobr><a href="'.url('socials/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('socials/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('socials/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
             );
@@ -58,7 +58,7 @@ class SocialsController extends Controller
             'columns' => [null, null, null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.socials.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -78,7 +78,7 @@ class SocialsController extends Controller
     public function create()
     {
         $icons = Icons::all();  
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.socials.create', [
                 'icons' => $icons,    
                 'title' => $this->title,
@@ -107,7 +107,7 @@ class SocialsController extends Controller
             'link' => $data['link'],
             'icon_id' => $data['icon'],
             'user_id' => auth()->user()->id,
-            'personal_id' => Helper::getActiveProfile()->id,
+            'profile_id' => Helper::getActiveProfile()->id,
         ]);
 
         if($store){
@@ -132,7 +132,7 @@ class SocialsController extends Controller
 
         $user = $data->user;
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.socials.show', [
                 'data' => $data,
                 'user' => $user,
@@ -155,7 +155,7 @@ class SocialsController extends Controller
 
         $icons = Icons::all();
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.socials.show', [
                 'data' => $data,
                 'icons' => $icons,
@@ -180,7 +180,7 @@ class SocialsController extends Controller
         $data['link'] = $request->input('link');
         $data['icon_id'] = $request->input('icon');
         $data['user_id'] = auth()->user()->id;
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Socials::find($id)->update($data);
 

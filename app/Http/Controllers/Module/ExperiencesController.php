@@ -57,7 +57,7 @@ class ExperiencesController extends Controller
             'columns' => [null, null, null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.experiences.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -93,17 +93,19 @@ class ExperiencesController extends Controller
         ];
 
         $startDate = [
-            'format' => 'DD/MM/YYYY',
-            'useCurrent' => false,
+            'format' => 'MM/YYYY',
+            'useCurrent' => true,
+            'maxDate' => "js:moment()",
         ];
 
         $endDate = [
-            'format' => 'DD/MM/YYYY',
-            'useCurrent' => false,
+            'format' => 'MM/YYYY',
+            'useCurrent' => true,
+            'maxDate' => "js:moment()",
         ];
 
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.experiences.create', [
                 'configTE' => $configTE,
                 'startDate' => $startDate,
@@ -136,7 +138,7 @@ class ExperiencesController extends Controller
             'employer' => $data['employer'],
             'user_id' => auth()->user()->id,
             'description' => $data['description'],
-            'personal_id' => Helper::getActiveProfile()->id,
+            'profile_id' => Helper::getActiveProfile()->id,
         ]);
 
         if($store){
@@ -177,7 +179,7 @@ class ExperiencesController extends Controller
             ],
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.experiences.show', [
                 'data' => $data,
                 'user' => $user,
@@ -216,16 +218,18 @@ class ExperiencesController extends Controller
         ];
 
         $startDate = [
-            'format' => 'DD/MM/YYYY',
-            'useCurrent' => false,
+            'format' => 'MM/YYYY',
+            'useCurrent' => true,
+            'maxDate' => "js:moment()",
         ];
 
         $endDate = [
-            'format' => 'DD/MM/YYYY',
-            'useCurrent' => false,
+            'format' => 'MM/YYYY',
+            'useCurrent' => true,
+            'maxDate' => "js:moment()",
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.experiences.edit', [
                 'data' => $data,
                 'configTE' => $configTE,
@@ -256,7 +260,7 @@ class ExperiencesController extends Controller
         $data['end'] = !empty($request->input('current')) ? $request->input('current') : $request->input('endDate');
         $data['description'] = $request->input('description');
         $data['user_id'] = auth()->user()->id;
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Experiences::find($id)->update($data);
 

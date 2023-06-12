@@ -53,7 +53,7 @@ class InterestsController extends Controller
             'columns' => [null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.interests.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -72,7 +72,7 @@ class InterestsController extends Controller
      */
     public function create()
     {        
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.interests.create', [
                 'title' => $this->title,
                 'table_title' => 'Create '.$this->title,
@@ -98,7 +98,7 @@ class InterestsController extends Controller
         $store = Interests::create([
             'name' => $data['name'],
             'user_id' => auth()->user()->id,
-            'personal_id' => Helper::getActiveProfile()->id,
+            'profile_id' => Helper::getActiveProfile()->id,
         ]);
 
         if($store){
@@ -123,7 +123,7 @@ class InterestsController extends Controller
 
         $user = $data->user;
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.interests.show', [
                 'data' => $data,
                 'user' => $user,
@@ -144,7 +144,7 @@ class InterestsController extends Controller
     {
         $data = Interests::where('id', $id)->firstOrFail();
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.interests.edit', [
                 'data' => $data,
                 'title' => $this->title,
@@ -168,7 +168,7 @@ class InterestsController extends Controller
 
         $data['name'] = $request->input('name');
         $data['user_id'] = auth()->user()->id;
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Interests::find($id)->update($data);
 

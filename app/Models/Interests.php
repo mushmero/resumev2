@@ -20,7 +20,7 @@ class Interests extends Model
             'user_id',
             'created_at',
             'updated_at',
-            'personal_id',
+            'profile_id',
         ]);
     } 
     protected $table = 'module_interests';
@@ -33,7 +33,7 @@ class Interests extends Model
     protected $fillable = [
         'name',
         'user_id',
-        'personal_id',
+        'profile_id',
     ];
 
     public function profile()

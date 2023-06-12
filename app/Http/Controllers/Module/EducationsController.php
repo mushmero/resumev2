@@ -48,7 +48,7 @@ class EducationsController extends Controller
                 $arr->name,
                 $arr->institution,
                 $arr->start .' - '. $arr->end,
-                $arr->level_id ? $arr->edulevel->name .' (' .$arr->edulevel->level.')' : '',
+                $arr->level_id ? $arr->edulevels->name .' (' .$arr->edulevels->level.')' : '',
                 $arr->user->name,
                 '<nobr><a href="'.url('educations/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('educations/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('educations/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
             );
@@ -60,7 +60,7 @@ class EducationsController extends Controller
             'columns' => [null, null, null, null, null, null],
         ];
 
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.educations.list', [
                 'heads' => $heads,
                 'config' => $config,
@@ -95,7 +95,7 @@ class EducationsController extends Controller
             'useCurrent' => false,
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.educations.create', [
                 'educations' => $educations,
                 'configEducations' => $configEducations,
@@ -129,7 +129,7 @@ class EducationsController extends Controller
             'end' => $data['endDate'],
             'level_id' => $data['level'],
             'user_id' => auth()->user()->id,
-            'personal_id' => Helper::getActiveProfile()->id,
+            'profile_id' => Helper::getActiveProfile()->id,
         ]);
 
         if($store){
@@ -154,7 +154,7 @@ class EducationsController extends Controller
 
         $user = $data->user;
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.educations.show', [
                 'data' => $data,
                 'user' => $user,
@@ -191,7 +191,7 @@ class EducationsController extends Controller
             'useCurrent' => false,
         ];
         
-        if(Helper::getActiveProfile()->count() > 0){
+        if(!is_null(Helper::getActiveProfile())){
             return view('modules.educations.edit', [
                 'data' => $data,
                 'educations' => $educations,
@@ -223,7 +223,7 @@ class EducationsController extends Controller
         $data['end'] = $request->input('endDate');
         $data['level_id'] = $request->input('level');
         $data['user_id'] = auth()->user()->id;
-        $data['personal_id'] = Helper::getActiveProfile()->id;
+        $data['profile_id'] = Helper::getActiveProfile()->id;
 
         $update = Educations::find($id)->update($data);
 
