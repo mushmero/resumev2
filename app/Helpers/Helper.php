@@ -12,7 +12,7 @@ use Str;
 class Helper {
     public static function getActiveProfile()
     {
-        $profile = Profiles::withTrashed()->where(['status' => 1])->first();
+        $profile = Profiles::withTrashed()->where(['status' => 1])->get();
         return $profile;
     }
 	

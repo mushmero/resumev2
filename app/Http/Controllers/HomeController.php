@@ -20,6 +20,7 @@ use PragmaRX\Countries\Package\Countries;
 
 class HomeController extends Controller
 {
+    protected $title, $error_msg;
     /**
      * Create a new controller instance.
      *
@@ -28,6 +29,10 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('autologout');
+        $this->title = 'Home';
+        $this->error_msg = [
+            'inactive_profile' => 'No active profile. Please activate first',
+        ];
     }
 
     /**
@@ -50,7 +55,9 @@ class HomeController extends Controller
                 'social' => $this->getSocials(),
             ]);
         }else{
-            return view('no-access');
+            return view('no-access',[
+                'error_msg' => $this->error_msg['inactive_profile'],
+            ]);
         }
     }
 
