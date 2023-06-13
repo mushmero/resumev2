@@ -99,7 +99,7 @@ class HomeController extends Controller
         $data = array();
         foreach($skills as $skill){
             $data['name'][] = $skill->name;
-            $data['icon'][] = $skill->icons->fullname;
+            $data['icon'][] = $skill->icon_id ? $skill->icons->fullname : '';
             $data['percentage'][] = $skill->percentage;
         }
         $data['count'] = isset($skills) ? $skills->count() : 0;
@@ -161,7 +161,7 @@ class HomeController extends Controller
         foreach($socials as $social){
             $data['name'][] = $social->name;
             $data['status'][] = $social->link;
-            $data['icon'][] = $social->icons->fullname;
+            $data['icon'][] = $social->icon_id ? $social->icons->fullname : '';
         }
         $data['count'] = isset($socials) ? $socials->count() : 0;
         return $data;
