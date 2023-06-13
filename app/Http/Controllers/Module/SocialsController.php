@@ -156,7 +156,7 @@ class SocialsController extends Controller
         $icons = Icons::all();
         
         if(!is_null(Helper::getActiveProfile())){
-            return view('modules.socials.show', [
+            return view('modules.socials.edit', [
                 'data' => $data,
                 'icons' => $icons,
                 'title' => $this->title,
