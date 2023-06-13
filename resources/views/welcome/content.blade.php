@@ -104,7 +104,7 @@
             @if (!empty($data['skills']))
                 @foreach ($data['skills'] as $skill)
                     <skill-block>
-                        <i class="{{ $skill->icons->fullname }} fa-8x"></i> <span>{{ $skill->name }}</span>
+                        <i class="{{ $skill->icon_id ? $skill->icons->fullname : 'fas fa-hashtag' }} fa-8x"></i> <span>{{ $skill->name }}</span>
                     </skill-block>                
                 @endforeach                
             @else
