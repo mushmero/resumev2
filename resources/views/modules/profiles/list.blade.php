@@ -53,7 +53,7 @@ function switchAjax(id) {
                                     success: function() {
                                         Swal.fire({
                                             icon: 'success',
-                                            title: 'Status updated. Please activate new persona'
+                                            title: 'Status updated. Please activate new profile'
                                         });
                                         toggle.next('.active_switch').text('Inactive');
                                         /**setTimeout(function() {
@@ -69,7 +69,7 @@ function switchAjax(id) {
                     }else{
                         Swal.fire({
                             'icon': 'warning',
-                            'title': 'You have active persona. Please deactivate first.',
+                            'title': 'You have active profile. Please deactivate first.',
                         });
                         toggle.prop('checked',false);
                     }
