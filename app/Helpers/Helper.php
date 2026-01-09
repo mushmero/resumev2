@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use App\Models\Attachments;
+use App\Models\Config\Countries;
 use App\Models\Profiles;
 use App\Models\Visitors;
 use Carbon\Carbon;
@@ -50,18 +51,34 @@ class Helper {
 
 	public static function ipLocation($ip)
     {
-		$geoip = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip));
-		$location = array(
-			'userip' => $geoip['geoplugin_request'],
-			'city' => $geoip['geoplugin_city'],
-			'country' => $geoip['geoplugin_countryName'],
-			'countryCode' => $geoip['geoplugin_countryCode'],
-			'continent'	=> $geoip['geoplugin_continentName'],
-			'continentCode' => $geoip['geoplugin_continentCode'],
-			'timezone'	=> $geoip['geoplugin_timezone'],
-			'latitude' => $geoip['geoplugin_latitude'],
-			'longitude' => $geoip['geoplugin_longitude'],
-		);
+		$geoip = json_decode(file_get_contents('https://ipinfo.io/'.$ip), true);
+		if (in_array($geoip['ip'], ['127.0.0.1', '::1'])) {
+			$location = array(
+				'userip' => $geoip['ip'],
+				'city' => null,
+				'country' => null,
+				'countryCode' => null,
+				'continent'	=> null,
+				'continentCode' => null,
+				'timezone'	=> null,
+				'latitude' => null,
+				'longitude' => null,
+			);
+		} else {
+			$countryInfo = Helper::countryData($geoip['country']);
+			$latlong = explode(',', $geoip['loc']);
+			$location = array(
+				'userip' => $geoip['ip'],
+				'city' => $geoip['city'],
+				'country' => $countryInfo['name'],
+				'countryCode' => $geoip['country'],
+				'continent'	=> $countryInfo['continent_name'],
+				'continentCode' => $countryInfo['continent_code'],
+				'timezone'	=> $geoip['timezone'],
+				'latitude' => $latlong[0],
+				'longitude' => $latlong[1],
+			);
+		}
 		return $location;
 	}
 	public static function visitor()
@@ -200,5 +217,11 @@ class Helper {
 			unset($old_array[$key]);
 		}
 		return $new_array;
+	}
+
+	public static function countryData($countryCode)
+	{
+		$country = Countries::where('code', $countryCode)->first();
+		return $country;
 	}
 }
