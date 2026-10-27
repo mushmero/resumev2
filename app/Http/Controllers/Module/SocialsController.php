@@ -43,12 +43,21 @@ class SocialsController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('socials/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('socials/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this social link?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('socials/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                $arr->name,
-                $arr->link,
-                $arr->icon_id ? '<i class="fa-fw '.$arr->icons->fullname.'"></i>&nbsp;'.$arr->icons->name : '',
-                $arr->user->name,
-                '<nobr><a href="'.url('socials/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('socials/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('socials/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->name),
+                e($arr->link),
+                $arr->icon_id && $arr->icons ? '<i class="fa-fw '.e($arr->icons->fullname).'"></i>&nbsp;'.e($arr->icons->name) : '',
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -128,7 +137,7 @@ class SocialsController extends Controller
      */
     public function show(string $id)
     {
-        $data = Socials::where('id', $id)->firstOrFail();
+        $data = Socials::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
         
@@ -151,7 +160,7 @@ class SocialsController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Socials::where('id', $id)->firstOrFail();
+        $data = Socials::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $icons = Icons::all();
         
@@ -172,6 +181,8 @@ class SocialsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $social = Socials::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -182,7 +193,7 @@ class SocialsController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Socials::find($id)->update($data);
+        $update = $social->update($data);
 
         if($update){
             flash(
@@ -202,7 +213,8 @@ class SocialsController extends Controller
      */
     public function destroy(string $id)
     {
-        Socials::find($id)->delete();
+        $social = Socials::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $social->delete();
         flash(
             'Social deleted successfully',
         )->success();

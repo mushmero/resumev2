@@ -44,13 +44,22 @@ class EducationsController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('educations/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('educations/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this education?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('educations/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                $arr->name,
-                $arr->institution,
-                $arr->start .' - '. $arr->end,
-                $arr->level_id ? $arr->edulevels->name .' (' .$arr->edulevels->level.')' : '',
-                $arr->user->name,
-                '<nobr><a href="'.url('educations/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('educations/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('educations/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->name),
+                e($arr->institution),
+                e($arr->start .' - '. $arr->end),
+                $arr->level_id && $arr->edulevels ? e($arr->edulevels->name .' (' .$arr->edulevels->level.')') : '',
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -150,7 +159,7 @@ class EducationsController extends Controller
      */
     public function show(string $id)
     {
-        $data = Educations::where('id', $id)->firstOrFail();
+        $data = Educations::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
         
@@ -173,7 +182,7 @@ class EducationsController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Educations::where('id', $id)->firstOrFail();
+        $data = Educations::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $educations = EducationLevel::all();
         $configEducations = [
@@ -213,6 +222,8 @@ class EducationsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $edu = Educations::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -225,7 +236,7 @@ class EducationsController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Educations::find($id)->update($data);
+        $update = $edu->update($data);
 
         if($update){
             flash(
@@ -245,7 +256,8 @@ class EducationsController extends Controller
      */
     public function destroy(string $id)
     {
-        Educations::find($id)->delete();
+        $edu = Educations::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $edu->delete();
         flash(
             'Education deleted successfully',
         )->success();

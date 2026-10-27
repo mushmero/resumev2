@@ -42,11 +42,21 @@ class SkillsController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('skills/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('skills/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this skill?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('skills/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
+            $percentage = (int)$arr->percentage;
             $data[] = array(
-                $arr->name.'&nbsp;&nbsp;&nbsp; <i class="fa-fw '.$arr->icons->fullname.'"></i>',
-                '<div class="progress"><div role="progressbar" class="progress-bar progress-bar-striped progress-bar-animated" aria-valuenow="'.$arr->percentage.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$arr->percentage.'%; background-color: rgb(52, 125, 241);">'.$arr->percentage.'</div></div>',
-                $arr->user->name,
-                '<nobr><a href="'.url('skills/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('skills/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('skills/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->name).'&nbsp;&nbsp;&nbsp; <i class="fa-fw '.e($arr->icons->fullname ?? '').'"></i>',
+                '<div class="progress"><div role="progressbar" class="progress-bar progress-bar-striped progress-bar-animated" aria-valuenow="'.$percentage.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$percentage.'%; background-color: rgb(52, 125, 241);">'.$percentage.'%</div></div>',
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -127,7 +137,7 @@ class SkillsController extends Controller
      */
     public function show(string $id)
     {
-        $data = Skills::where('id', $id)->firstOrFail();
+        $data = Skills::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
         
@@ -150,7 +160,7 @@ class SkillsController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Skills::where('id', $id)->firstOrFail();
+        $data = Skills::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $icons = Icons::all();
         
@@ -171,9 +181,11 @@ class SkillsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $skill = Skills::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'name' => 'required',
-            'percentage' => 'required|min:1|max:100',
+            'percentage' => 'required|numeric|min:1|max:100',
         ]);
 
         $data['name'] = $request->input('name');
@@ -182,7 +194,7 @@ class SkillsController extends Controller
         $data['icon_id'] = $request->input('icon');
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Skills::find($id)->update($data);
+        $update = $skill->update($data);
 
         if($update){
             flash(
@@ -202,7 +214,8 @@ class SkillsController extends Controller
      */
     public function destroy(string $id)
     {
-        Skills::find($id)->delete();
+        $skill = Skills::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $skill->delete();
         flash(
             'Skill deleted successfully',
         )->success();

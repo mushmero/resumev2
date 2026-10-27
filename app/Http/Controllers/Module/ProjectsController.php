@@ -43,12 +43,21 @@ class ProjectsController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('projects/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('projects/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this project?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('projects/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                $arr->name,
-                $arr->status_id ? $arr->status->status : '',
-                $arr->description,
-                $arr->user->name,
-                '<nobr><a href="'.url('projects/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('projects/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('projects/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->name),
+                $arr->status_id && $arr->status ? e($arr->status->status) : '',
+                e($arr->description),
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -152,7 +161,7 @@ class ProjectsController extends Controller
      */
     public function show(string $id)
     {
-        $data = Projects::where('id', $id)->firstOrFail();
+        $data = Projects::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
 
@@ -192,7 +201,7 @@ class ProjectsController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Projects::where('id', $id)->firstOrFail();
+        $data = Projects::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $configTE = [
             "height" => "300",
@@ -237,6 +246,8 @@ class ProjectsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $project = Projects::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -247,7 +258,7 @@ class ProjectsController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Projects::find($id)->update($data);
+        $update = $project->update($data);
 
         if($update){
             flash(
@@ -267,7 +278,8 @@ class ProjectsController extends Controller
      */
     public function destroy(string $id)
     {
-        Projects::find($id)->delete();
+        $project = Projects::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $project->delete();
         flash(
             'Project deleted successfully',
         )->success();

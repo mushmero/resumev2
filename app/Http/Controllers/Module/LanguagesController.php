@@ -42,11 +42,20 @@ class LanguagesController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('languages/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('languages/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this language?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('languages/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                $arr->name,
-                $arr->proficiency_id ? $arr->proficiency->proficiency : '',
-                $arr->user->name,
-                '<nobr><a href="'.url('languages/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('languages/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('languages/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->name),
+                $arr->proficiency_id && $arr->proficiency ? e($arr->proficiency->proficiency) : '',
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -131,7 +140,7 @@ class LanguagesController extends Controller
      */
     public function show(string $id)
     {
-        $data = Languages::where('id', $id)->firstOrFail();
+        $data = Languages::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
         
@@ -154,7 +163,7 @@ class LanguagesController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Languages::where('id', $id)->firstOrFail();  
+        $data = Languages::where('id', $id)->where('user_id', auth()->id())->firstOrFail();  
               
         $proficiency = ProficiencyLevel::all();
         $configProficiency = [
@@ -182,6 +191,8 @@ class LanguagesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $lang = Languages::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -191,7 +202,7 @@ class LanguagesController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Languages::find($id)->update($data);
+        $update = $lang->update($data);
 
         if($update){
             flash(
@@ -211,7 +222,8 @@ class LanguagesController extends Controller
      */
     public function destroy(string $id)
     {
-        Languages::find($id)->delete();
+        $lang = Languages::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $lang->delete();
         flash(
             'Language deleted successfully',
         )->success();

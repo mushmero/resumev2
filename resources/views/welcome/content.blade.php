@@ -86,7 +86,7 @@
                         <figcaption>
                             <center><i class="fas fa-fw fa-calendar-day"></i> {{ $experience->start }} - {{ $experience->end }} </center>
                             <br>
-                            {!! $experience->description !!}
+                            {!! strip_tags($experience->description, '<p><br><b><i><strong><em><ul><ol><li><a><h3><h4>') !!}
                         </figcaption>
                     </figure>
                 @endforeach                
@@ -125,7 +125,7 @@
                         <figcaption>
                             <center><h4>{{ $project['name'] }}</h4></center>
                             @if (!empty($project['description']))
-                                <br> {!! $project['description'] !!}
+                                <br> {!! strip_tags($project['description'], '<p><br><b><i><strong><em><ul><ol><li><a><h3><h4>') !!}
                             @endif
                         </figcaption>
                     </figure>            

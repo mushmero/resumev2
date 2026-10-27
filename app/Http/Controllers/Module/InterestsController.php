@@ -40,10 +40,19 @@ class InterestsController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('interests/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('interests/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this interest?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('interests/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                $arr->name,
-                $arr->user->name,
-                '<nobr><a href="'.url('interests/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('interests/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('interests/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->name),
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -119,7 +128,7 @@ class InterestsController extends Controller
      */
     public function show(string $id)
     {
-        $data = Interests::where('id', $id)->firstOrFail();
+        $data = Interests::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
         
@@ -142,7 +151,7 @@ class InterestsController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Interests::where('id', $id)->firstOrFail();
+        $data = Interests::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         
         if(!is_null(Helper::getActiveProfile())){
             return view('modules.interests.edit', [
@@ -162,6 +171,8 @@ class InterestsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $interest = Interests::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'name' => 'required',
         ]);
@@ -170,7 +181,7 @@ class InterestsController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Interests::find($id)->update($data);
+        $update = $interest->update($data);
 
         if($update){
             flash(
@@ -191,7 +202,8 @@ class InterestsController extends Controller
      */
     public function destroy(string $id)
     {
-        Interests::find($id)->delete();
+        $interest = Interests::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $interest->delete();
         flash(
             'Interest deleted successfully',
         )->success();

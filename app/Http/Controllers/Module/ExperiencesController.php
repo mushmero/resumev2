@@ -42,12 +42,21 @@ class ExperiencesController extends Controller
         ];
 
         foreach($array as $arr){
+            $actions = '<nobr>' .
+                '<a href="'.url('experiences/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('experiences/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this experience?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0">'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a href="'.url('experiences/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                $arr->position,
-                $arr->start .' - '. $arr->end,
-                $arr->employer,
-                $arr->user->name,
-                '<nobr><a href="'.url('experiences/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a href="'.url('experiences/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a href="'.url('experiences/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->position),
+                e($arr->start .' - '. $arr->end),
+                e($arr->employer),
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -159,7 +168,7 @@ class ExperiencesController extends Controller
      */
     public function show(string $id)
     {
-        $data = Experiences::where('id', $id)->firstOrFail();
+        $data = Experiences::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
 
@@ -199,7 +208,7 @@ class ExperiencesController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Experiences::where('id', $id)->firstOrFail();
+        $data = Experiences::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $configTE = [
             "height" => "300",
@@ -250,6 +259,8 @@ class ExperiencesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $exp = Experiences::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'position' => 'required',
         ]);
@@ -262,7 +273,7 @@ class ExperiencesController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['profile_id'] = Helper::getActiveProfile()->id;
 
-        $update = Experiences::find($id)->update($data);
+        $update = $exp->update($data);
 
         if($update){
             flash(
@@ -282,7 +293,8 @@ class ExperiencesController extends Controller
      */
     public function destroy(string $id)
     {
-        Experiences::find($id)->delete();
+        $exp = Experiences::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $exp->delete();
         flash(
             'Experience deleted successfully',
         )->success();

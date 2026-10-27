@@ -41,12 +41,21 @@ class ProfilesController extends Controller
         ];
 
         foreach($array as $arr){
-            
+            $actions = '<nobr>' .
+                '<a class="'.(!$arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/restore').'">'.$this->btnRestore.'</a>' .
+                '<a class="'.($arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a>' .
+                '<form action="'.url('profiles/'.$arr->id).'" method="POST" style="display:inline;" onsubmit="return confirm(\'Are you sure you want to delete this profile?\');">' .
+                    csrf_field() . method_field('DELETE') .
+                    '<button type="submit" class="border-0 bg-transparent p-0" '.($arr->trashed() ? 'disabled' : '').'>'.$this->btnDelete.'</button>' .
+                '</form>' .
+                '<a class="'.($arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/show').'">'.$this->btnDetails.'</a>' .
+            '</nobr>';
+
             $data[] = array(
-                '<div class="row"><div class="col-1"><img src="'.url($arr->attachments->path.'/'.$arr->attachments->filename).'" alt="'.$arr->attachments->altname.'" width="50" height="50" class="img-center"></div><div class="col-11">'.$arr->fullname.'&nbsp;'.(!empty($arr->tagline) ? '('.$arr->tagline.')' : '').(!empty($arr->phone) ? '<br><i class="fa-fw fas fa-mobile-alt"></i>&nbsp;'.$arr->phone : '').(!empty($arr->email) ? '&nbsp;<i class="fa-fw fas fa-envelope"></i>&nbsp;'.$arr->email : '').(!empty($arr->website) ? '<br><i class="fa-fw fas fa-globe"></i>&nbsp;'.$arr->website : '').'</div></div>',
+                '<div class="row"><div class="col-1"><img src="'.url(e($arr->attachments->path.'/'.$arr->attachments->filename)).'" alt="'.e($arr->attachments->altname).'" width="50" height="50" class="img-center"></div><div class="col-11">'.e($arr->fullname).'&nbsp;'.(!empty($arr->tagline) ? '('.e($arr->tagline).')' : '').(!empty($arr->phone) ? '<br><i class="fa-fw fas fa-mobile-alt"></i>&nbsp;'.e($arr->phone) : '').(!empty($arr->email) ? '&nbsp;<i class="fa-fw fas fa-envelope"></i>&nbsp;'.e($arr->email) : '').(!empty($arr->website) ? '<br><i class="fa-fw fas fa-globe"></i>&nbsp;'.e($arr->website) : '').'</div></div>',
                 '<div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input" id="activeSwitch'.$arr->id.'" name="activeSwitch'.$arr->id.'" onchange="switchAjax('.$arr->id.')" '.($arr->status == 1 ? "checked" : "").' '.(auth()->user()->id != $arr->user_id ? 'disabled' : '').' /><label class="active_switch custom-control-label" for="activeSwitch'.$arr->id.'">'.($arr->status == 1 ? "Active" : "Inactive").'</label></div>',
-                $arr->user->name,
-                '<nobr><a class="'.(!$arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/restore').'">'.$this->btnRestore.'</a><a class="'.($arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/edit').'">'.$this->btnEdit.'</a><a class="'.($arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/delete').'">'.$this->btnDelete.'</a><a class="'.($arr->trashed() ? 'disabled' : '').'" href="'.url('profiles/'.$arr->id.'/show').'">'.$this->btnDetails.'</a></nobr>',
+                e($arr->user->name),
+                $actions,
             );
         }
 
@@ -126,7 +135,7 @@ class ProfilesController extends Controller
      */
     public function show(string $id)
     {
-        $data = Profiles::where('id', $id)->firstOrFail();
+        $data = Profiles::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         $user = $data->user;
 
@@ -143,7 +152,7 @@ class ProfilesController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Profiles::where('id', $id)->firstOrFail();
+        $data = Profiles::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
 
         return view('modules.profiles.edit', [
             'data' => $data,
@@ -157,11 +166,14 @@ class ProfilesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $profile = Profiles::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
         $this->validate($request, [
             'fullname' => 'required',       
             'profilephoto' => 'image|mimes:png,jpg|max:5120',
         ]);
 
+        $data = [];
         if($request->file('profilephoto')){
             $uploadedFile = Helper::storeFile($request, 'profilephoto', 'profilephoto', 'profilephoto');
             if($uploadedFile){
@@ -175,9 +187,8 @@ class ProfilesController extends Controller
         $data['phone'] = $request->input('phone');
         $data['email'] = $request->input('email');
         $data['website'] = $request->input('website');
-        $data['user_id'] = auth()->user()->id;
 
-        $update = Profiles::find($id)->update($data);
+        $update = $profile->update($data);
 
         if($update){
             flash(
@@ -197,11 +208,12 @@ class ProfilesController extends Controller
      */
     public function destroy(string $id)
     {
+        $profile = Profiles::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         $delete = [
             'deleted_at' => Carbon::now(),
             'deleted_by' => auth()->user()->id,
         ];
-        Profiles::where('id', $id)->update($delete);
+        $profile->update($delete);
 
         flash(
             'Profile deleted successfully',
@@ -211,8 +223,9 @@ class ProfilesController extends Controller
 
     public function restore($id)
     {
-        Profiles::withTrashed()->where('id',$id)->update(['deleted_by' => '']);
-        Profiles::withTrashed()->where('id',$id)->restore();
+        $profile = Profiles::withTrashed()->where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $profile->update(['deleted_by' => '']);
+        $profile->restore();
 
         flash(
             'Profile restore successfully',
@@ -222,7 +235,7 @@ class ProfilesController extends Controller
 
     public function countstatus()
     {
-        $count = Profiles::where(['status' => 1, 'user_id' => auth()->user()->id])->get()->count();;
+        $count = Profiles::where(['status' => 1, 'user_id' => auth()->user()->id])->count();
         return $count;
     }
 
@@ -239,8 +252,9 @@ class ProfilesController extends Controller
     public function updateStatusById(Request $request)
     {
         $id = $request->input('id');
+        $profile = Profiles::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         $data['status'] = $request->input('status');
-        Profiles::find($id)->update($data);
+        $profile->update($data);
         return true;
     }
 }

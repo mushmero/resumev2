@@ -178,6 +178,10 @@ class IconsController extends Controller
 
     public function import(Request $request)
     {
+        $request->validate([
+            'iconfile' => 'required|file|mimes:json|max:2048',
+        ]);
+
         $uploaded_file = $request->file('iconfile');
         if($uploaded_file && !is_null($uploaded_file->extension())){            
             $uploadedFile = Helper::storeFile($request, 'iconfile', 'icons', 'icons');
@@ -188,6 +192,7 @@ class IconsController extends Controller
                 return response()->json(['error' => 'Error invalid file']);
             }
         }
+        return response()->json(['error' => 'No file provided'], 422);
     }
 
     public function processImportFile($file)
